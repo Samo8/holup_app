@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:holup/app/connection/connection.dart';
-import 'package:holup/app/controllers/api_controller.dart';
+import 'connection.dart';
+import '../controllers/api_controller.dart';
+import '../models/calendar_event.dart';
 import 'package:http/http.dart' as http;
 
 class FlaskDatabaseOperations {
