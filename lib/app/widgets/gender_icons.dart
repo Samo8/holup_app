@@ -18,7 +18,7 @@ class LeadingIconWidget extends StatelessWidget {
       children: [
         if (gender.contains(men))
           const Padding(
-            padding: const EdgeInsets.all(2.0),
+            padding: EdgeInsets.all(2.0),
             child: FaIcon(
               FontAwesomeIcons.male,
               size: 24,
@@ -27,7 +27,7 @@ class LeadingIconWidget extends StatelessWidget {
           ),
         if (gender.contains(women))
           const Padding(
-            padding: const EdgeInsets.all(2.0),
+            padding: EdgeInsets.all(2.0),
             child: FaIcon(
               FontAwesomeIcons.female,
               color: Constants.primaryColor,

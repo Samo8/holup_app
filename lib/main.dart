@@ -10,7 +10,7 @@ class HolupApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "Holup application",
+      title: 'Holup application',
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: ThemeConstants.lightTheme,

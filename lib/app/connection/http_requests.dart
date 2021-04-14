@@ -8,8 +8,7 @@ import 'connection.dart';
 
 class FlaskDatabaseOperations {
   static Future<http.Response> register(String email, String password) async {
-    String url = '${Connection.springApiURL}/register';
-
+    final url = '${Connection.springApiURL}/register';
     try {
       return await http.post(url, body: {
         'email': email,
@@ -21,8 +20,7 @@ class FlaskDatabaseOperations {
   }
 
   static Future<http.Response> signIn(String email, String password) async {
-    String url = '${Connection.springApiURL}/auth';
-
+    final url = '${Connection.springApiURL}/auth';
     try {
       return await http
           .post(
@@ -47,7 +45,7 @@ class FlaskDatabaseOperations {
   static Future<http.Response> fetchAccommodationsData({
     Map<String, dynamic> arguments,
   }) async {
-    String url = '${Connection.springApiURL}/accommodations';
+    final url = '${Connection.springApiURL}/accommodations';
     try {
       print(arguments);
       return await http
@@ -69,8 +67,7 @@ class FlaskDatabaseOperations {
   }
 
   static Future<http.Response> fetchCalendarEvents(int userId) async {
-    String url = '${Connection.springApiURL}/calendar_events/$userId';
-
+    final url = '${Connection.springApiURL}/calendar_events/$userId';
     try {
       return await http.get(
         url,
@@ -85,8 +82,7 @@ class FlaskDatabaseOperations {
   }
 
   static Future<http.Response> updateCalendarEvent(CalendarEvent event) async {
-    String url = '${Connection.springApiURL}/calendar_event/${event.id}';
-
+    final url = '${Connection.springApiURL}/calendar_event/${event.id}';
     try {
       return await http
           .put(
