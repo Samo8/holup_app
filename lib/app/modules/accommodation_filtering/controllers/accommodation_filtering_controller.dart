@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import '../../../connection/http_requests.dart';
 import '../../../models/accommodation.dart';
 
+enum Status { UNKNOWN, FETCHING, DONE, ERROR }
+
 class AccommodationFilteringController extends GetxController {
   RxList<Accommodation> accommodations = <Accommodation>[].obs;
 
@@ -18,6 +20,8 @@ class AccommodationFilteringController extends GetxController {
 
   final selectedAccommodation = Accommodation().obs;
 
+  var status = Status.UNKNOWN;
+
   Map<String, double> positionRequestArgs(Position position) {
     return <String, double>{
       'lat': position.latitude,
@@ -27,8 +31,7 @@ class AccommodationFilteringController extends GetxController {
 
   Future<void> fetchAccommodations() async {
     try {
-      print('SOM TU');
-
+      status = Status.FETCHING;
       final arguments = <String, dynamic>{};
 
       if (distanceFromActualPossition.value != 0) {
@@ -64,6 +67,7 @@ class AccommodationFilteringController extends GetxController {
       );
 
       if (response.statusCode != 200) {
+        status = Status.ERROR;
         throw response.body;
       }
 
@@ -75,6 +79,7 @@ class AccommodationFilteringController extends GetxController {
 
       accommodations
           .assignAll(data.map((e) => Accommodation.fromJson(e)).toList());
+      status = Status.DONE;
 
       for (final accommodation in accommodations) {
         print(accommodation.id.toString() + accommodation.name);

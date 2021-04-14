@@ -19,51 +19,57 @@ class AccommodationListView extends GetView<AccommodationListController> {
       ),
       body: Obx(
         () => accommodationFilteringController.accommodations.isEmpty
-            ? Center(
-                child: Text(
-                  'Nebolo nájdené žiadne ubytovanie, ktoré spĺňalo zadané parametre',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              )
-            : ListView.builder(
-                itemBuilder: (ctx, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 2.0,
+            ? accommodationFilteringController.status == Status.FETCHING
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Center(
+                    child: Text(
+                      'Nebolo nájdené žiadne ubytovanie, ktoré spĺňalo zadané parametre',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline5,
                     ),
-                    child: InkWell(
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: ListTile(
-                            leading: LeadingIconWidget(
+                  )
+            : Scrollbar(
+                child: ListView.builder(
+                  itemBuilder: (ctx, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 2.0,
+                      ),
+                      child: InkWell(
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ListTile(
+                              leading: LeadingIconWidget(
+                                  accommodationFilteringController
+                                      .accommodations[index].gender),
+                              title: Text(
                                 accommodationFilteringController
-                                    .accommodations[index].gender),
-                            title: Text(
-                              accommodationFilteringController
-                                  .accommodations[index].name,
-                            ),
-                            subtitle: Text(
-                              'Adresa: ${accommodationFilteringController.accommodations[index].address}\n'
-                              'Typ: ${accommodationFilteringController.accommodations[index].type}',
+                                    .accommodations[index].name,
+                              ),
+                              subtitle: Text(
+                                'Adresa: ${accommodationFilteringController.accommodations[index].address}\n'
+                                'Typ: ${accommodationFilteringController.accommodations[index].type}',
+                              ),
                             ),
                           ),
                         ),
+                        onTap: () {
+                          accommodationFilteringController
+                                  .selectedAccommodation.value =
+                              accommodationFilteringController
+                                  .accommodations[index];
+                          Get.toNamed(Routes.ACCOMMODATION_DETAIL);
+                        },
                       ),
-                      onTap: () {
-                        accommodationFilteringController
-                                .selectedAccommodation.value =
-                            accommodationFilteringController
-                                .accommodations[index];
-                        Get.toNamed(Routes.ACCOMMODATION_DETAIL);
-                      },
-                    ),
-                  );
-                },
-                itemCount:
-                    accommodationFilteringController.accommodations.length,
+                    );
+                  },
+                  itemCount:
+                      accommodationFilteringController.accommodations.length,
+                ),
               ),
       ),
     );
