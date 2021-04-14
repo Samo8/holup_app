@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:get/get.dart';
-import 'connection.dart';
-import '../controllers/api_controller.dart';
-import '../models/calendar_event.dart';
 import 'package:http/http.dart' as http;
+
+import '../models/calendar_event.dart';
+import 'connection.dart';
 
 class FlaskDatabaseOperations {
   static Future<http.Response> register(String email, String password) async {
@@ -49,8 +48,6 @@ class FlaskDatabaseOperations {
     Map<String, dynamic> arguments,
   }) async {
     String url = '${Connection.springApiURL}/accommodations';
-    String apiKey = Get.find<ApiController>().apiKey.value;
-    print('${Connection.apiKeyPrefix}$apiKey');
     try {
       print(arguments);
       return await http
@@ -58,7 +55,6 @@ class FlaskDatabaseOperations {
             url,
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
-              'Authorization': '${Connection.apiKeyPrefix}$apiKey',
             },
             body: json.encode(arguments),
           )

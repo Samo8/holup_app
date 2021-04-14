@@ -14,7 +14,7 @@ class AccommodationListView extends GetView<AccommodationListController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AccommodationListView'),
+        title: const Text('Ubytovanie'),
         centerTitle: true,
       ),
       body: Obx(
@@ -49,9 +49,6 @@ class AccommodationListView extends GetView<AccommodationListController> {
                               'Adresa: ${accommodationFilteringController.accommodations[index].address}\n'
                               'Typ: ${accommodationFilteringController.accommodations[index].type}',
                             ),
-                            // trailing: Text(
-                            //   accommodationFilteringController.accommodations[index].gender,
-                            // ),
                           ),
                         ),
                       ),

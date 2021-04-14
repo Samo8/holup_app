@@ -1,20 +1,14 @@
 import 'package:get/get.dart';
 
+import '../../accommodation_filtering/controllers/accommodation_filtering_controller.dart';
+
 class AccommodationListController extends GetxController {
-  //TODO: Implement AccommodationListController
+  final accommodationFilteringController =
+      Get.find<AccommodationFilteringController>();
 
-  final count = 0.obs;
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+    await accommodationFilteringController.fetchAccommodations();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {}
-  void increment() => count.value++;
 }

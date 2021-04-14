@@ -43,6 +43,8 @@ dependencies:
 
   json_annotation: ^3.1.1
 
+  multi_select_flutter: ^3.1.8
+
   syncfusion_flutter_calendar: ^18.3.40
 
   url_launcher: ^5.7.10

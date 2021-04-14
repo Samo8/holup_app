@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+
 import '../../../connection/http_requests.dart';
 import '../../../models/accommodation.dart';
 
@@ -13,7 +14,7 @@ class AccommodationFilteringController extends GetxController {
   final selectedServiceTypes = <String>[].obs;
   final selectedGenders = <String>[].obs;
   final selectedAges = <String>[].obs;
-  final distanceFromActualPossition = 0.obs;
+  final distanceFromActualPossition = 0.0.obs;
 
   final selectedAccommodation = Accommodation().obs;
 
@@ -26,6 +27,8 @@ class AccommodationFilteringController extends GetxController {
 
   Future<void> fetchAccommodations() async {
     try {
+      print('SOM TU');
+
       final arguments = <String, dynamic>{};
 
       if (distanceFromActualPossition.value != 0) {
@@ -59,8 +62,6 @@ class AccommodationFilteringController extends GetxController {
       final response = await FlaskDatabaseOperations.fetchAccommodationsData(
         arguments: arguments,
       );
-
-      // print(response.body);
 
       if (response.statusCode != 200) {
         throw response.body;

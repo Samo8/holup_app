@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:holup/app/constants/theme_constants.dart';
 
 import 'app/routes/app_pages.dart';
 
@@ -12,6 +13,8 @@ class HolupApp extends StatelessWidget {
       title: "Holup application",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      theme: ThemeConstants.lightTheme,
+      darkTheme: ThemeConstants.darkTheme,
     );
   }
 }
