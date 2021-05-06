@@ -5,21 +5,21 @@ part 'calendar_event.g.dart';
 @JsonSerializable()
 class CalendarEvent {
   final int id;
-  final int userId;
-  final String name;
-  final DateTime start;
-  final DateTime end;
-  final String text;
-  final bool saved;
+  final String userId;
+  final String title;
+  final String description;
+  final String startTime;
+  final String endTime;
+  final bool imported;
 
   const CalendarEvent({
     this.id,
     this.userId,
-    this.name,
-    this.start,
-    this.end,
-    this.text,
-    this.saved,
+    this.title,
+    this.description,
+    this.startTime,
+    this.endTime,
+    this.imported,
   });
 
   factory CalendarEvent.fromJson(Map<String, dynamic> json) =>

@@ -1,22 +1,42 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:holup/app/controllers/api_controller.dart';
 import 'package:holup/app/routes/app_pages.dart';
+import 'package:holup/app/widgets/menu_item.dart';
 
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
+  final apiController = Get.find<ApiController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HomeView'),
+        title: Text('Menu'),
         centerTitle: true,
       ),
-      body: Center(
-        child: RaisedButton(
-          child: const Text('Ubytovanie'),
-          onPressed: () => Get.toNamed(Routes.ACCOMMODATION_FILTERING),
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MenuItem(
+              title: 'Ubytovanie',
+              imagePath: 'assets/images/accommodation_menu.png',
+              onTap: () => Get.toNamed(Routes.ACCOMMODATION_FILTERING),
+            ),
+            const SizedBox(height: 60),
+            MenuItem(
+              title: 'Kalendár',
+              imagePath: 'assets/images/calendar_menu.png',
+              onTap: () async => apiController.apiKey.isNotEmpty
+                  ? await Get.toNamed(Routes.CALENDAR_EVENTS)
+                  : await Get.toNamed(Routes.SIGN_IN),
+            ),
+          ],
         ),
       ),
     );

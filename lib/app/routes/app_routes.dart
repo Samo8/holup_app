@@ -6,7 +6,8 @@ abstract class Routes {
   static const ACCOMMODATION_FILTERING = _Paths.ACCOMMODATION_FILTERING;
   static const ACCOMMODATION_LIST = _Paths.ACCOMMODATION_LIST;
   static const ACCOMMODATION_DETAIL = _Paths.ACCOMMODATION_DETAIL;
-  static const CALENDAR = _Paths.CALENDAR;
+  static const CALENDAR_EVENTS = _Paths.CALENDAR_EVENTS;
+  static const SIGN_IN = _Paths.SIGN_IN;
 }
 
 abstract class _Paths {
@@ -14,5 +15,6 @@ abstract class _Paths {
   static const ACCOMMODATION_FILTERING = '/accommodation-filtering';
   static const ACCOMMODATION_LIST = '/accommodation-list';
   static const ACCOMMODATION_DETAIL = '/accommodation-detail';
-  static const CALENDAR = '/calendar';
+  static const CALENDAR_EVENTS = '/calendar-events';
+  static const SIGN_IN = '/sign-in';
 }

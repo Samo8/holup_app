@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 abstract class Constants {
-  static const primaryColor = Colors.green;
+  static const primaryColor = Color(0xFF35C3B3);
 
   static const regions = [
-    'Banskobystrický',
-    'Bratislavský',
-    'Košický',
-    'Nitrianský',
-    'Prešovský',
-    'Trenčianský',
-    'Trnavský',
+    'Banskobystrický kraj',
+    'Bratislavský kraj',
+    'Košický kraj',
+    'Nitrianský kraj',
+    'Prešovský kraj',
+    'Trenčianský kraj',
+    'Trnavský kraj',
   ];
   static const districts = [
     'Bánovce nad Bebravou',

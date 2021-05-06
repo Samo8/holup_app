@@ -66,13 +66,15 @@ class FlaskDatabaseOperations {
     }
   }
 
-  static Future<http.Response> fetchCalendarEvents(int userId) async {
-    final url = '${Connection.springApiURL}/calendar_events/$userId';
+  static Future<http.Response> fetchCalendarEvents(
+      String uuid, String apiKey) async {
+    final url = '${Connection.springApiURL}/calendar_events/$uuid';
     try {
       return await http.get(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=utf-8',
+          'Authorization': 'api-key $apiKey',
         },
       ).timeout(Duration(seconds: Connection.timeout));
     } catch (e) {
@@ -81,18 +83,30 @@ class FlaskDatabaseOperations {
     }
   }
 
-  static Future<http.Response> updateCalendarEvent(CalendarEvent event) async {
-    final url = '${Connection.springApiURL}/calendar_event/${event.id}';
+  static Future<http.Response> updateCalendarEvent(int id) async {
+    final url = '${Connection.springApiURL}/calendar_event/$id';
     try {
-      return await http
-          .put(
-            url,
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: json.encode(event.toJson()),
-          )
-          .timeout(Duration(seconds: Connection.timeout));
+      return await http.patch(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      ).timeout(Duration(seconds: Connection.timeout));
+    } catch (e) {
+      print(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<http.Response> deleteCalendarEvent(int id) async {
+    final url = '${Connection.springApiURL}/calendar_event/$id';
+    try {
+      return await http.delete(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      ).timeout(Duration(seconds: Connection.timeout));
     } catch (e) {
       print(e.toString());
       rethrow;
