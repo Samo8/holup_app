@@ -1,5 +1,9 @@
 import 'package:get/get.dart';
 
+import 'package:holup/app/modules/automatic_event_detail/bindings/automatic_event_detail_binding.dart';
+import 'package:holup/app/modules/automatic_event_detail/views/automatic_event_detail_view.dart';
+import 'package:holup/app/modules/automatic_events/bindings/automatic_events_binding.dart';
+import 'package:holup/app/modules/automatic_events/views/automatic_events_view.dart';
 import 'package:holup/app/modules/sign_in/bindings/sign_in_binding.dart';
 import 'package:holup/app/modules/sign_in/views/sign_in_view.dart';
 
@@ -49,6 +53,16 @@ class AppPages {
       name: _Paths.SIGN_IN,
       page: () => SignInView(),
       binding: SignInBinding(),
+    ),
+    GetPage(
+      name: _Paths.AUTOMATIC_EVENT_DETAIL,
+      page: () => AutomaticEventDetailView(),
+      binding: AutomaticEventDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.AUTOMATIC_EVENTS,
+      page: () => AutomaticEventsView(),
+      binding: AutomaticEventsBinding(),
     ),
   ];
 }

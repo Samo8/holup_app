@@ -8,6 +8,8 @@ abstract class Routes {
   static const ACCOMMODATION_DETAIL = _Paths.ACCOMMODATION_DETAIL;
   static const CALENDAR_EVENTS = _Paths.CALENDAR_EVENTS;
   static const SIGN_IN = _Paths.SIGN_IN;
+  static const AUTOMATIC_EVENT_DETAIL = _Paths.AUTOMATIC_EVENT_DETAIL;
+  static const AUTOMATIC_EVENTS = _Paths.AUTOMATIC_EVENTS;
 }
 
 abstract class _Paths {
@@ -17,4 +19,6 @@ abstract class _Paths {
   static const ACCOMMODATION_DETAIL = '/accommodation-detail';
   static const CALENDAR_EVENTS = '/calendar-events';
   static const SIGN_IN = '/sign-in';
+  static const AUTOMATIC_EVENT_DETAIL = '/automatic-event-detail';
+  static const AUTOMATIC_EVENTS = '/automatic-events';
 }

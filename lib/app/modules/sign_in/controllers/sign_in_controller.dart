@@ -6,11 +6,12 @@ import 'package:holup/app/controllers/api_controller.dart';
 import 'package:holup/app/routes/app_pages.dart';
 
 class SignInController extends GetxController {
-  Future<void> signIn(String email, String password) async {
-    email = 'samodubovec@gmail.com';
-    password = 'samo123';
+  Future<void> signIn(int convictedNumber, String password) async {
+    convictedNumber = 100;
+    password = '123456';
     try {
-      final response = await FlaskDatabaseOperations.signIn(email, password);
+      final response =
+          await FlaskDatabaseOperations.signIn(convictedNumber, password);
 
       if (response.statusCode != 200) {
         Get.snackbar('Chyba', 'Nastala chyba pri prihlasovani');

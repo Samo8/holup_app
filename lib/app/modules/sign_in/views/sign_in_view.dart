@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -8,7 +6,7 @@ import 'package:holup/app/widgets/custom_textfield.dart';
 import '../controllers/sign_in_controller.dart';
 
 class SignInView extends GetView<SignInController> {
-  final emailController = TextEditingController();
+  final convictedNubmerController = TextEditingController();
   final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -21,8 +19,8 @@ class SignInView extends GetView<SignInController> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextField(
-            hint: 'Email',
-            controller: emailController,
+            hint: 'Číslo odsúdeného',
+            controller: convictedNubmerController,
           ),
           CustomTextField(
             hint: 'Heslo',
@@ -33,7 +31,9 @@ class SignInView extends GetView<SignInController> {
           ElevatedButton(
             child: const Text('Prihlásiť'),
             onPressed: () async => await controller.signIn(
-                emailController.text, passwordController.text),
+              int.tryParse(convictedNubmerController.text),
+              passwordController.text,
+            ),
           ),
         ],
       ),

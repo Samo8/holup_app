@@ -49,7 +49,6 @@ class CalendarEventsView extends GetView<CalendarEventsController> {
                 color: Colors.white,
               ),
               onPressed: () async => await controller.showAlertDialog(
-                context,
                 CustomAlertDialog(),
               ),
             ),

@@ -12,7 +12,7 @@ class GoogleDataSource extends CalendarDataSource {
     print('start date: ${event.start.date}');
     print('start date time: ${event.start?.dateTime?.toLocal()}');
     // return event.start.date ?? event.start.dateTime.toLocal();
-    return event.start?.dateTime?.toLocal() ?? DateTime.now();
+    return event.start?.dateTime?.toLocal() ?? event.start?.date?.toLocal();
   }
 
   @override
@@ -24,11 +24,12 @@ class GoogleDataSource extends CalendarDataSource {
   @override
   DateTime getEndTime(int index) {
     final Event event = appointments[index];
-    return event.endTimeUnspecified != null && event.endTimeUnspecified
-        ? (event.start.date ?? event.start.dateTime.toLocal())
-        : (event.end.date != null
-            ? event.end.date.add(Duration(days: -1))
-            : event.end.dateTime.toLocal());
+    return event.end?.dateTime?.toLocal() ?? event.end?.date?.toLocal();
+    // return event.endTimeUnspecified != null && event.endTimeUnspecified
+    //     ? (event.start.date ?? event.start.dateTime.toLocal())
+    //     : (event.end.date != null
+    //         ? event.end.date.add(Duration(days: -1))
+    //         : event.end.dateTime.toLocal());
   }
 
   @override
