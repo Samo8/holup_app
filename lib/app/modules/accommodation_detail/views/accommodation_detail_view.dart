@@ -15,7 +15,7 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail zariadenia'),
+        title: const Text('Detail ubytovania'),
         centerTitle: true,
       ),
       body: ListView(
