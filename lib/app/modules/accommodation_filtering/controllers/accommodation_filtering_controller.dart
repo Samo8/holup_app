@@ -40,7 +40,7 @@ class AccommodationFilteringController extends GetxController {
         arguments['distance'] = distanceFromActualPossition?.value?.toDouble();
       }
 
-      if (selectedGenders.isNotEmpty || selectedGenders.length != 2) {
+      if (selectedGenders.isNotEmpty && selectedGenders.length != 2) {
         arguments['gender'] = selectedGenders.first;
       }
 
@@ -65,7 +65,7 @@ class AccommodationFilteringController extends GetxController {
       }
       print(arguments);
 
-      final response = await FlaskDatabaseOperations.fetchAccommodationsData(
+      final response = await SpringDatabaseOperations.fetchAccommodationsData(
         arguments: arguments,
       );
 
@@ -83,10 +83,6 @@ class AccommodationFilteringController extends GetxController {
       accommodations
           .assignAll(data.map((e) => Accommodation.fromJson(e)).toList());
       status = Status.DONE;
-
-      // for (final accommodation in accommodations) {
-      //   print(accommodation.id.toString() + accommodation.name);
-      // }
     } catch (_) {
       rethrow;
     }
@@ -95,14 +91,12 @@ class AccommodationFilteringController extends GetxController {
   Future<Position> _determinePosition() async {
     if (!await Geolocator.isLocationServiceEnabled()) {
       throw 'Prístup ku polohe zariadenia nie je povolený.';
-      // 'Location services are disabled.';
     }
 
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
       throw 'Prístup ku polohe zariadenia je zamietnutý, povoľte prosím'
           ' prístup aplikácii v nastaveniach zariadenia.';
-      // 'Location permissions are permantly denied, we cannot request permissions.';
     }
 
     if (permission == LocationPermission.denied) {
@@ -110,7 +104,6 @@ class AccommodationFilteringController extends GetxController {
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
         throw 'Location permissions are denied (actual value: $permission).';
-        // 'Location permissions are denied (actual value: $permission).';
       }
     }
 

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
+  final TextInputType keyboardType;
   final String hint;
+  final List<TextInputFormatter> inputFormatters;
   final bool obscure;
 
   CustomTextField({
     @required this.controller,
+    @required this.keyboardType,
     @required this.hint,
+    this.inputFormatters,
     this.obscure = false,
   });
 
@@ -22,6 +27,8 @@ class CustomTextField extends StatelessWidget {
           hintText: hint,
         ),
         obscureText: obscure,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
       ),
     );
   }

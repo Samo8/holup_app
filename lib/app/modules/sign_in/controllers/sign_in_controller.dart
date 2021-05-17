@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:holup/app/connection/http_requests.dart';
-import 'package:holup/app/controllers/api_controller.dart';
-import 'package:holup/app/routes/app_pages.dart';
+
+import '../../../connection/http_requests.dart';
+import '../../../controllers/api_controller.dart';
+import '../../../routes/app_pages.dart';
 
 class SignInController extends GetxController {
   Future<void> signIn(int convictedNumber, String password) async {
@@ -11,7 +12,7 @@ class SignInController extends GetxController {
     password = '123456';
     try {
       final response =
-          await FlaskDatabaseOperations.signIn(convictedNumber, password);
+          await SpringDatabaseOperations.signIn(convictedNumber, password);
 
       if (response.statusCode != 200) {
         Get.snackbar('Chyba', 'Nastala chyba pri prihlasovani');

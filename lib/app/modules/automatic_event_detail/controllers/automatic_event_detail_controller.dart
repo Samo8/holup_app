@@ -3,14 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/calendar/v3.dart';
-import 'package:holup/app/connection/http_requests.dart';
-import 'package:holup/app/controllers/api_controller.dart';
-import 'package:holup/app/models/automatic_event.dart';
-import 'package:holup/app/models/calendar_event_dto.dart';
-import 'package:holup/app/models/release.dart';
-import 'package:holup/app/modules/automatic_events/controllers/automatic_events_controller.dart';
-import 'package:holup/app/modules/calendar_events/controllers/calendar_events_controller.dart';
 import 'package:intl/intl.dart';
+
+import '../../../connection/http_requests.dart';
+import '../../../controllers/api_controller.dart';
+import '../../../models/automatic_event.dart';
+import '../../../models/calendar_event_dto.dart';
+import '../../../models/release.dart';
+import '../../automatic_events/controllers/automatic_events_controller.dart';
+import '../../calendar_events/controllers/calendar_events_controller.dart';
 
 class AutomaticEventDetailController extends GetxController {
   final _dateFormat = DateFormat('dd.MM.yyyy');
@@ -32,43 +33,38 @@ class AutomaticEventDetailController extends GetxController {
       ..minutes = 720,
   ];
 
-  final apiController = Get.find<ApiController>();
   final calendarEventsController = Get.find<CalendarEventsController>();
 
   Future<void> addCalendarEventDialog(Widget dialog) async {
     await showDialog<void>(
       context: Get.context,
-      builder: (ctx) => dialog,
+      builder: (_) => dialog,
     );
   }
 
-  Future<Release> _fetchRelease(String uuid, String apiKey) async {
-    final response = await FlaskDatabaseOperations.fetchReleaseDate(
+  Future<Release> _fetchRelease({String uuid, String apiKey}) async {
+    final response = await SpringDatabaseOperations.fetchReleaseDate(
       uuid,
       apiKey,
     );
 
     if (response.statusCode == 404) {
-      throw 'Nebol nájdený dátum prepustenie';
+      throw 'Nebol nájdený dátum prepustenia';
     }
     if (response.statusCode != 200) {
       throw 'Nastala chyba';
     }
 
-    final data = json.decode(response.body);
+    final Map<String, dynamic> data = json.decode(response.body);
     return Release.fromJson(data);
   }
 
-  Future<Event> _addEventToGoogleCalendar(
+  Future<void> _addEventToGoogleCalendar(
     CalendarEventDTO calendarEventDTO,
   ) async {
     final calendarId = await calendarEventsController.getZvjsCalendarId();
-
     final eventDate =
         calendarEventsController.allDayEvent(calendarEventDTO.end);
-
-    print(calendarId);
-    print(eventDate.toJson());
 
     final event = await calendarEventsController.addEvent(
       calendarId: calendarId,
@@ -78,48 +74,72 @@ class AutomaticEventDetailController extends GetxController {
       reminders: reminders,
     );
     calendarEventsController.googleCalendarEvents.add(event);
-    return event;
   }
 
-  int _calculateEventDeadline(AutomaticEventType type) {
-    print(type);
+  int _calculateEventDeadline({
+    @required AutomaticEventType type,
+    @required DateTime releaseDate,
+  }) {
     if (type == AutomaticEventType.RESOCIAL) {
-      return 7;
+      return _calculateWorkingDays(releaseDate, 8);
     } else if (type == AutomaticEventType.WORK_OFFICE) {
-      return 8;
+      return 7;
     }
     return 0;
   }
 
+  int _calculateWorkingDays(DateTime dateTime, int days) {
+    for (var i = 0; i < days; i++) {
+      dateTime = dateTime.add(const Duration(days: 1));
+      if (dateTime.weekday == DateTime.saturday ||
+          dateTime.weekday == DateTime.sunday) {
+        days++;
+      }
+    }
+    return days;
+  }
+
+  CalendarEventDTO _getCalendarEventDTO({
+    AutomaticEvent automaticEvent,
+    String eventDate,
+  }) {
+    return CalendarEventDTO(
+      title: automaticEvent.title,
+      description: 'Posledný deň na vybavenie: ${automaticEvent.title}',
+      start: eventDate,
+      end: eventDate,
+    );
+  }
+
   Future<void> addEventToCalendar(AutomaticEvent automaticEvent) async {
     try {
-      final release = await _fetchRelease(
-        apiController.uuid.value,
-        apiController.apiKey.value,
-      );
+      final apiController = Get.find<ApiController>();
 
+      final release = await _fetchRelease(
+        uuid: apiController.uuid.value,
+        apiKey: apiController.apiKey.value,
+      );
       final releaseDate = _dateFormat.parse(release.releaseDate);
       final eventDate = releaseDate.add(
         Duration(
-          days: _calculateEventDeadline(automaticEvent.type),
+          days: _calculateEventDeadline(
+            type: automaticEvent.type,
+            releaseDate: releaseDate,
+          ),
         ),
       );
-
       final eventDateFormatted = _dateFormat.format(eventDate);
 
-      final calendarEventDTO = CalendarEventDTO(
-        title: automaticEvent.title,
-        description: 'Posledný deň na vybavenie: ${automaticEvent.title}',
-        start: eventDateFormatted,
-        end: eventDateFormatted,
+      final calendarEventDTO = _getCalendarEventDTO(
+        automaticEvent: automaticEvent,
+        eventDate: eventDateFormatted,
       );
-
       await _addEventToGoogleCalendar(calendarEventDTO);
 
       Get.find<AutomaticEventsController>().setState();
+      Get.back();
+      Get.back();
 
-      Get.back();
-      Get.back();
       Get.snackbar(
         'Udalosť uložená',
         'Udalosť bola úspešne uložená do kalendáru',
@@ -127,7 +147,11 @@ class AutomaticEventDetailController extends GetxController {
       );
     } catch (e) {
       Get.back();
-      print(e.toString());
+      Get.snackbar(
+        'Udalosť neblo uložená',
+        'nepodarilo sa uložiť udalosť, skúste to neskôr prosím',
+        duration: const Duration(seconds: 5),
+      );
     }
   }
 }

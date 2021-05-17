@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:holup/app/constants/constants.dart';
-import 'package:holup/app/models/automatic_event.dart';
-import 'package:holup/app/modules/automatic_events/controllers/automatic_events_controller.dart';
 
+import '../../../constants/constants.dart';
+import '../../../models/automatic_event.dart';
+import '../../automatic_events/controllers/automatic_events_controller.dart';
 import '../controllers/automatic_event_detail_controller.dart';
 
 class AutomaticEventDetailView extends GetView<AutomaticEventDetailController> {
@@ -22,7 +21,7 @@ class AutomaticEventDetailView extends GetView<AutomaticEventDetailController> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 final automaticEventItem = selectedEvent.items[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -67,8 +66,8 @@ class AutomaticEventDetailView extends GetView<AutomaticEventDetailController> {
             ),
           ),
           SafeArea(
-            child: RaisedButton.icon(
-              icon: Icon(Icons.add, color: Constants.primaryColor),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.add),
               label: const Text('Pridať udalosť'),
               onPressed: () async {
                 await controller.addCalendarEventDialog(
@@ -99,11 +98,17 @@ class AddEventAlertDialog extends StatelessWidget {
       content: Text('Pridať udalosť: ${automaticEvent.title} do kalendára?'),
       actions: [
         FlatButton(
-          child: const Text('Zrušiť'),
+          child: const Text(
+            'Zrušiť',
+            style: TextStyle(color: Constants.primaryColor),
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         FlatButton(
-          child: const Text('Pridať'),
+          child: const Text(
+            'Pridať',
+            style: TextStyle(color: Constants.primaryColor),
+          ),
           onPressed: () async =>
               await controller.addEventToCalendar(automaticEvent),
         ),

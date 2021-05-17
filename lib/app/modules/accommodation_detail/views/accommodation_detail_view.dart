@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:get/get.dart';
-import 'package:holup/app/constants/constants.dart';
-import 'package:holup/app/modules/accommodation_filtering/controllers/accommodation_filtering_controller.dart';
-import 'package:holup/app/widgets/gender_icons.dart';
 
+import '../../../constants/constants.dart';
+import '../../../widgets/gender_icons.dart';
+import '../../accommodation_filtering/controllers/accommodation_filtering_controller.dart';
 import '../controllers/accommodation_detail_controller.dart';
 
 class AccommodationDetailView extends GetView<AccommodationDetailController> {
@@ -60,6 +59,11 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
             ),
             title: Text(
               accommodationFilteringController.selectedAccommodation.value.type,
+            ),
+          ),
+          ListTile(
+            title: Text(
+              accommodationFilteringController.selectedAccommodation.value.age,
             ),
           ),
           const SizedBox(height: 12.0),

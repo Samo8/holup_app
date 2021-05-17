@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:holup/app/constants/constants.dart';
-import 'package:holup/app/modules/calendar_events/controllers/calendar_events_controller.dart';
-import 'package:holup/app/routes/app_pages.dart';
 
+import '../../../constants/constants.dart';
+import '../../../routes/app_pages.dart';
+import '../../calendar_events/controllers/calendar_events_controller.dart';
 import '../controllers/automatic_events_controller.dart';
 
 class AutomaticEventsView extends StatefulWidget {

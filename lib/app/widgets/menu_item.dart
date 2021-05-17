@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:holup/app/constants/constants.dart';
+
+import '../constants/constants.dart';
 
 class MenuItem extends StatelessWidget {
   final String title;

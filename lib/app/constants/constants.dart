@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:holup/app/models/automatic_event.dart';
-import 'package:holup/app/models/automatic_event_item.dart';
+
+import '../models/automatic_event.dart';
+import '../models/automatic_event_item.dart';
 
 abstract class Constants {
   static const primaryColor = Color(0xFF35C3B3);

@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
-import 'package:holup/app/models/calendar_event_dto.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/calendar_event_dto.dart';
 import 'connection.dart';
 
-class FlaskDatabaseOperations {
+class SpringDatabaseOperations {
   static final baseUrl = GetPlatform.isIOS
       ? Connection.springApiUrlIos
       : Connection.springApiUrlAndroid;
@@ -123,7 +123,7 @@ class FlaskDatabaseOperations {
   ) async {
     final url = '$baseUrl/calendar_event/$id';
     try {
-      return await http.patch(
+      return await http.put(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

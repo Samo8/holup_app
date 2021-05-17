@@ -13,7 +13,7 @@ class AccommodationFilteringView
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vyhľadávanie ubytovaní'),
+        title: const Text('Vyhľadávanie ubytovania'),
         centerTitle: true,
       ),
       body: Column(
@@ -53,8 +53,8 @@ class AccommodationFilteringView
                           .toList(),
                       listType: MultiSelectListType.LIST,
                       onConfirm: (values) {
-                        controller.selectedRegions.assignAll(values);
-                        print(controller.selectedRegions);
+                        controller.selectedDistricts.assignAll(values);
+                        print(controller.selectedDistricts);
                       },
                     ),
                     const SizedBox(height: 16.0),
@@ -62,8 +62,7 @@ class AccommodationFilteringView
                       title: 'Podľa mojej polohy',
                       description:
                           'Ak potrebuješ nájsť ubytovanie, ktoré je k tebe v danom momente'
-                          ' najbližšie, použi uvedený filter. Zadaním okruhu vzdialenosti'
-                          ' automaticky zrušíš prípadné vyhľadávanie "Podľa lokality".',
+                          ' najbližšie, použi uvedený filter.',
                     ),
                     const SizedBox(height: 8.0),
                     Obx(
@@ -115,35 +114,34 @@ class AccommodationFilteringView
                         controller.selectedGenders.assignAll(values);
                       },
                     ),
-                    const AccommodationHeader(
-                      title: 'Podľa veku',
-                      description:
-                          'Ubytovacie možnosti jednotlivých zariadení sa líšia aj podľa'
-                          ' vekovej kategórie klientov. Použitím filtra upresni svoje vyhľadávanie.',
-                    ),
-                    MultiSelectDialogField<String>(
-                      title: const Text('Vek'),
-                      buttonText: const Text('Vek'),
-                      items: Constants.ages
-                          .map((e) => MultiSelectItem(e, e))
-                          .toList(),
-                      listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        controller.selectedAges.assignAll(values);
-                      },
-                    ),
+                    // const AccommodationHeader(
+                    //   title: 'Podľa veku',
+                    //   description:
+                    //       'Ubytovacie možnosti jednotlivých zariadení sa líšia aj podľa'
+                    //       ' vekovej kategórie klientov. Použitím filtra upresni svoje vyhľadávanie.',
+                    // ),
+                    // MultiSelectDialogField<String>(
+                    //   title: const Text('Vek'),
+                    //   buttonText: const Text('Vek'),
+                    //   items: Constants.ages
+                    //       .map((e) => MultiSelectItem(e, e))
+                    //       .toList(),
+                    //   listType: MultiSelectListType.CHIP,
+                    //   onConfirm: (values) {
+                    //     controller.selectedAges.assignAll(values);
+                    //   },
+                    // ),
                   ],
                 ),
               ),
             ),
           ),
-          ElevatedButton.icon(
-            label: const Text('Zobraziť ponuky'),
-            icon: Icon(Icons.remove_red_eye),
-            onPressed: () => Get.toNamed(Routes.ACCOMMODATION_LIST),
-          ),
-          const SizedBox(
-            height: 20,
+          SafeArea(
+            child: ElevatedButton.icon(
+              label: const Text('Zobraziť ponuky'),
+              icon: Icon(Icons.remove_red_eye),
+              onPressed: () => Get.toNamed(Routes.ACCOMMODATION_LIST),
+            ),
           ),
         ],
       ),

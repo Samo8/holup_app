@@ -1,31 +1,56 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:holup/app/modules/accommodation_filtering/controllers/accommodation_filtering_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../accommodation_filtering/controllers/accommodation_filtering_controller.dart';
+
 class AccommodationDetailController extends GetxController {
-  static const googleMapBaseURL =
+  static const _phoneContact = 'Telefonický kontakt';
+  static const _emailContact = 'Emailový kontakt';
+
+  static const _googleMapBaseURL =
       'https://www.google.com/maps/search/?api=1&query=';
-  static const appleMapsBaseURL = 'https://maps.apple.com/?q=';
+  static const _appleMapsBaseURL = 'https://maps.apple.com/?q=';
 
   Future<void> sendEmail(String email) async {
     final emailUri = Uri(
       scheme: 'mailto',
       path: email,
-      queryParameters: {'subject': ''},
+      query: 'subject=Holup aplikácia&body=Dobrý den, \n'
+          'Vopred ďakujem za odpoveď\n',
     );
-    if (await canLaunch(emailUri.toString())) {
-      await launch(emailUri.toString());
+    final url = emailUri.toString();
+
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
-      Get.snackbar('Chyba', 'Chyba email');
+      if (email.isNotEmpty) {
+        await _cantOpenAppDialog(_emailContact, email);
+      } else {
+        Get.snackbar(
+          _emailContact,
+          'Zariadenie nemá uvedený emailový kontakt',
+          duration: const Duration(seconds: 5),
+        );
+      }
     }
   }
 
   Future<void> makeCall(String phoneNumber) async {
     final phone = 'tel://$phoneNumber';
+
     if (await canLaunch(phone)) {
       await launch(phone);
     } else {
-      Get.snackbar('Chyba', 'Telefon chyba');
+      if (phoneNumber.isNotEmpty) {
+        await _cantOpenAppDialog(_phoneContact, phoneNumber);
+      } else {
+        Get.snackbar(
+          _phoneContact,
+          'Zariadenie nemá uvedený telefonický kontakt',
+          duration: const Duration(seconds: 5),
+        );
+      }
     }
   }
 
@@ -36,16 +61,31 @@ class AccommodationDetailController extends GetxController {
     final lat = accommodation.location.lat;
     final lng = accommodation.location.lon;
 
-    // final googleMapsUrl = "comgooglemaps://?center=$lat,$lng";
-    final googleMapsUrl = '$googleMapBaseURL$lat,$lng';
-    final appleMapsUrl = '$appleMapsBaseURL$lat,$lng';
+    final googleMapsUrl = '$_googleMapBaseURL$lat,$lng';
+    final appleMapsUrl = '$_appleMapsBaseURL$lat,$lng';
 
     if (GetPlatform.isIOS && await canLaunch(appleMapsUrl)) {
       await launch(appleMapsUrl, forceSafariVC: false);
     } else if (await canLaunch(googleMapsUrl)) {
       await launch(googleMapsUrl);
     } else {
-      throw 'Chybicka';
+      throw 'Nepodarilo sa spustiť navigáciu';
     }
+  }
+
+  Future<void> _cantOpenAppDialog(String title, String body) async {
+    await showDialog(
+      context: Get.context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: SelectableText(body),
+        actions: [
+          FlatButton(
+            child: const Text('Zrušiť'),
+            onPressed: () => Get.back(),
+          ),
+        ],
+      ),
+    );
   }
 }

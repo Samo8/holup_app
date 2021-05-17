@@ -5,15 +5,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/calendar/v3.dart' hide Colors;
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:holup/app/connection/http_requests.dart';
-import 'package:holup/app/constants/constants.dart';
-import 'package:holup/app/controllers/api_controller.dart';
-import 'package:holup/app/models/calendar_event.dart';
-import 'package:holup/app/models/release.dart';
-import 'package:holup/app/routes/app_pages.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../connection/http_requests.dart';
+import '../../../constants/constants.dart';
+import '../../../controllers/api_controller.dart';
+import '../../../models/calendar_event.dart';
+import '../../../models/release.dart';
+import '../../../routes/app_pages.dart';
+
+enum Status { UNKNOWN, SUCCESS, FAILED, FETCHING }
 
 class CalendarEventsController extends GetxController {
   static const zone = 'Europe/Bratislava';
@@ -29,11 +32,13 @@ class CalendarEventsController extends GetxController {
 
   CalendarApi calendarAPI;
   var released = false;
+  var status = Status.UNKNOWN.obs;
 
   @override
   void onInit() async {
     super.onInit();
     try {
+      status.value = Status.FETCHING;
       await _initializeCalendarAPI();
       final events = await getGoogleEventsData();
       googleCalendarEvents.assignAll(events);
@@ -54,7 +59,7 @@ class CalendarEventsController extends GetxController {
         summary: event.title,
       );
       print(event.id);
-      await FlaskDatabaseOperations.updateCalendarEvent(
+      await SpringDatabaseOperations.updateCalendarEvent(
         event.id,
         apiController.apiKey.value,
       );
@@ -102,8 +107,10 @@ class CalendarEventsController extends GetxController {
           await _importAutomaticEventsDialog();
         }
       }
+      status.value = Status.SUCCESS;
       return appointments;
     } catch (_) {
+      status.value = Status.FAILED;
       rethrow;
     }
   }
@@ -201,7 +208,7 @@ class CalendarEventsController extends GetxController {
     final apiKey = apiController.apiKey.value;
 
     final response =
-        await FlaskDatabaseOperations.fetchReleaseDate(uuid, apiKey);
+        await SpringDatabaseOperations.fetchReleaseDate(uuid, apiKey);
 
     final data = json.decode(response.body);
     final releaseFromDB = Release.fromJson(data);
@@ -334,7 +341,7 @@ class CalendarEventsController extends GetxController {
       final uuid = apiController.uuid.value;
       final apiKey = apiController.apiKey.value;
       final response =
-          await FlaskDatabaseOperations.fetchCalendarEvents(uuid, apiKey);
+          await SpringDatabaseOperations.fetchCalendarEvents(uuid, apiKey);
       if (response.statusCode != 200) {
         throw response.body;
       }

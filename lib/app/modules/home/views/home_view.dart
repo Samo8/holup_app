@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:holup/app/controllers/api_controller.dart';
-import 'package:holup/app/routes/app_pages.dart';
-import 'package:holup/app/widgets/menu_item.dart';
 
+import '../../../controllers/api_controller.dart';
+import '../../../routes/app_pages.dart';
+import '../../../widgets/menu_item.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
