@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:get/get.dart';
-import 'package:holup/app/routes/app_pages.dart';
+import 'package:holup/app/widgets/custom_textfield.dart';
 
-import '../../../widgets/custom_textfield.dart';
-import '../controllers/sign_in_controller.dart';
+import '../controllers/sign_up_controller.dart';
 
-class SignInView extends GetView<SignInController> {
+class SignUpView extends GetView<SignUpController> {
   final convictedNubmerController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordRepeatController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prihlásenie'),
+        title: Text('Registrácia'),
         centerTitle: true,
       ),
       body: Column(
@@ -34,33 +35,22 @@ class SignInView extends GetView<SignInController> {
             keyboardType: TextInputType.visiblePassword,
             obscure: true,
           ),
-          const SizedBox(
-            height: 8,
-          ),
-          Row(
-            children: [
-              const SizedBox(
-                width: 12.0,
-              ),
-              const Text('Nemáte účet?'),
-              InkWell(
-                child: const Text(
-                  'Zaregistujte sa tu',
-                  style: TextStyle(color: Colors.blue),
-                ),
-                onTap: () => Get.toNamed(Routes.SIGN_UP),
-              ),
-            ],
+          CustomTextField(
+            hint: 'Heslo znovu',
+            controller: passwordRepeatController,
+            keyboardType: TextInputType.visiblePassword,
+            obscure: true,
           ),
           const SizedBox(height: 24),
           SizedBox(
             width: Get.size.width / 2,
             height: Get.size.width / 2 * 0.19,
             child: ElevatedButton(
-              child: const Text('Prihlásiť'),
-              onPressed: () async => await controller.signIn(
-                int.tryParse(convictedNubmerController.text),
-                passwordController.text,
+              child: const Text('Registrovať'),
+              onPressed: () async => await controller.signUp(
+                convictedNumber: int.tryParse(convictedNubmerController.text),
+                password: passwordController.text,
+                passwordRepeat: passwordRepeatController.text,
               ),
             ),
           ),

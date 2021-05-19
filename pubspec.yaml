@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.0
 
   flutter_dotenv: ^3.1.0
+  flutter_launcher_icons: ^0.8.1
   font_awesome_flutter: ^8.11.0
 
   geolocator: ^6.2.0
@@ -60,6 +61,11 @@ dev_dependencies:
 
   pedantic: ^1.9.2
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/pigeon.png"
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -73,6 +79,7 @@ flutter:
   assets:
     - assets/images/accommodation_menu.png
     - assets/images/calendar_menu.png
+    - assets/images/pigeon.png
     - .env
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

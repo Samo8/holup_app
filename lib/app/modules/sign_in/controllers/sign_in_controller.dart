@@ -15,7 +15,10 @@ class SignInController extends GetxController {
           await SpringDatabaseOperations.signIn(convictedNumber, password);
 
       if (response.statusCode != 200) {
-        Get.snackbar('Chyba', 'Nastala chyba pri prihlasovani');
+        Get.snackbar(
+          'Prihlásenie neúspešné',
+          'Nepodarilo sa prihlásiť, skúste no neskôr prosim.',
+        );
         return;
       }
       final data = json.decode(response.body);
@@ -25,8 +28,11 @@ class SignInController extends GetxController {
       apiController.uuid.value = data['id'];
 
       await Get.offAndToNamed(Routes.CALENDAR_EVENTS);
-    } catch (e) {
-      print(e.toString());
+    } catch (_) {
+      Get.snackbar(
+        'Prihlásenie neúspešné',
+        'Nepodarilo sa prihlásiť, skúste no neskôr prosim.',
+      );
     }
   }
 }

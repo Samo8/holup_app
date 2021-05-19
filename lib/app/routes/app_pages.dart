@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 
+import 'package:holup/app/modules/sign_up/bindings/sign_up_binding.dart';
+import 'package:holup/app/modules/sign_up/views/sign_up_view.dart';
+
 import '../modules/accommodation_detail/bindings/accommodation_detail_binding.dart';
 import '../modules/accommodation_detail/views/accommodation_detail_view.dart';
 import '../modules/accommodation_filtering/bindings/accommodation_filtering_binding.dart';
@@ -62,6 +65,11 @@ class AppPages {
       name: _Paths.AUTOMATIC_EVENTS,
       page: () => AutomaticEventsView(),
       binding: AutomaticEventsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SIGN_UP,
+      page: () => SignUpView(),
+      binding: SignUpBinding(),
     ),
   ];
 }

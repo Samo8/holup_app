@@ -13,13 +13,27 @@ class SpringDatabaseOperations {
       ? Connection.springApiUrlIos
       : Connection.springApiUrlAndroid;
 
-  static Future<http.Response> register(String email, String password) async {
+  static Future<http.Response> signUp(
+    int convictedNumber,
+    String password,
+  ) async {
+    print(convictedNumber);
     final url = '$baseUrl/register';
     try {
-      return await http.post(url, body: {
-        'email': email,
-        'password': password,
-      }).timeout(Duration(seconds: Connection.timeout));
+      return await http
+          .post(
+            url,
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: json.encode(
+              {
+                'convictedNumber': convictedNumber,
+                'password': password,
+              },
+            ),
+          )
+          .timeout(Duration(seconds: Connection.timeout));
     } catch (e) {
       rethrow;
     }
