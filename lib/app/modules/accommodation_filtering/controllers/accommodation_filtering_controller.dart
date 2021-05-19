@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:holup/app/errors/location_permission_exception.dart';
 
 import '../../../connection/http_requests.dart';
 import '../../../models/accommodation.dart';
@@ -20,7 +21,7 @@ class AccommodationFilteringController extends GetxController {
 
   final selectedAccommodation = Accommodation().obs;
 
-  var status = Status.UNKNOWN;
+  var status = Status.UNKNOWN.obs;
 
   Map<String, double> _usersPositionReguestArg(Position position) {
     return <String, double>{
@@ -31,13 +32,13 @@ class AccommodationFilteringController extends GetxController {
 
   Future<void> fetchAccommodations() async {
     try {
-      status = Status.FETCHING;
+      status.value = Status.FETCHING;
       final arguments = <String, dynamic>{};
 
       if (distanceFromActualPossition.value != 0.0) {
         final position = await _determinePosition();
         arguments['location'] = _usersPositionReguestArg(position);
-        arguments['distance'] = distanceFromActualPossition?.value?.toDouble();
+        arguments['distance'] = distanceFromActualPossition.value.toDouble();
       }
 
       if (selectedGenders.isNotEmpty && selectedGenders.length != 2) {
@@ -70,45 +71,60 @@ class AccommodationFilteringController extends GetxController {
       );
 
       if (response.statusCode != 200) {
-        status = Status.ERROR;
-        throw response.body;
+        status.value = Status.ERROR;
+        Get.snackbar(
+          'Nastala chyba',
+          'Pri získavaní ubytovacích zariadení nastala chyba, skúste to neskôr prosím',
+        );
+        return;
       }
 
       final utf8DecodedData = utf8.decode(response.bodyBytes);
-
       final List<dynamic> data = json.decode(utf8DecodedData);
 
-      print(data);
-
-      accommodations
-          .assignAll(data.map((e) => Accommodation.fromJson(e)).toList());
-      status = Status.DONE;
+      accommodations.assignAll(
+        data.map((e) => Accommodation.fromJson(e)).toList(),
+      );
+      status.value = Status.DONE;
+    } on LocationPermissionException catch (e) {
+      status.value = Status.ERROR;
+      Get.snackbar('Prístup ku polohe', e.toString());
     } catch (_) {
-      rethrow;
+      status.value = Status.ERROR;
+      Get.snackbar(
+        'Nastala chyba',
+        'Pri získavaní ubytovacích zariadení nastala chyba, skúste to neskôr prosím',
+      );
     }
   }
 
   Future<Position> _determinePosition() async {
     if (!await Geolocator.isLocationServiceEnabled()) {
-      throw 'Prístup ku polohe zariadenia nie je povolený.';
+      throw LocationPermissionException(
+        'Prístup ku polohe zariadenia nie je povolený.',
+      );
     }
 
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
-      throw 'Prístup ku polohe zariadenia je zamietnutý, povoľte prosím'
-          ' prístup aplikácii v nastaveniach zariadenia.';
+      throw LocationPermissionException(
+        'Prístup ku polohe zariadenia je zamietnutý, povoľte prosím'
+        ' prístup aplikácii v nastaveniach zariadenia.',
+      );
     }
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
-        throw 'Location permissions are denied (actual value: $permission).';
+        throw LocationPermissionException(
+          'Prístup ku polohe nie je povolený (aktuálny stav: $permission).',
+        );
       }
     }
 
     return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.low,
+      desiredAccuracy: LocationAccuracy.medium,
     );
   }
 }

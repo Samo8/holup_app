@@ -36,26 +36,25 @@ class AccommodationFilteringView
                       title: const Text('Kraje'),
                       buttonText: const Text('Kraje'),
                       items: Constants.regions
-                          .map((e) => MultiSelectItem(e, e))
+                          .map((region) => MultiSelectItem(region, region))
                           .toList(),
                       listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        controller.selectedRegions.assignAll(values);
-                        print(controller.selectedRegions);
-                      },
+                      onConfirm: (values) =>
+                          controller.selectedRegions.assignAll(values),
                     ),
                     const SizedBox(height: 16.0),
                     MultiSelectDialogField<String>(
                       title: const Text('Okresy'),
                       buttonText: const Text('Okresy'),
                       items: Constants.districts
-                          .map((e) => MultiSelectItem(e, e))
+                          .map((district) => MultiSelectItem(
+                                district,
+                                district,
+                              ))
                           .toList(),
                       listType: MultiSelectListType.LIST,
-                      onConfirm: (values) {
-                        controller.selectedDistricts.assignAll(values);
-                        print(controller.selectedDistricts);
-                      },
+                      onConfirm: (values) =>
+                          controller.selectedDistricts.assignAll(values),
                     ),
                     const SizedBox(height: 16.0),
                     const AccommodationHeader(
@@ -74,9 +73,8 @@ class AccommodationFilteringView
                         label: controller.distanceFromActualPossition.value
                             .round()
                             .toString(),
-                        onChanged: (double value) {
-                          controller.distanceFromActualPossition.value = value;
-                        },
+                        onChanged: (value) => controller
+                            .distanceFromActualPossition.value = value,
                       ),
                     ),
                     const SizedBox(height: 16.0),
@@ -90,12 +88,11 @@ class AccommodationFilteringView
                       title: const Text('Typy zariadení'),
                       buttonText: const Text('Typy zariadení'),
                       items: Constants.types
-                          .map((e) => MultiSelectItem(e, e))
+                          .map((type) => MultiSelectItem(type, type))
                           .toList(),
                       listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        controller.selectedServiceTypes.assignAll(values);
-                      },
+                      onConfirm: (values) =>
+                          controller.selectedServiceTypes.assignAll(values),
                     ),
                     const AccommodationHeader(
                       title: 'Podľa pohlavia',
@@ -107,30 +104,12 @@ class AccommodationFilteringView
                       title: const Text('Pohlavie'),
                       buttonText: const Text('Pohlavie'),
                       items: Constants.genders
-                          .map((e) => MultiSelectItem(e, e))
+                          .map((gender) => MultiSelectItem(gender, gender))
                           .toList(),
                       listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        controller.selectedGenders.assignAll(values);
-                      },
+                      onConfirm: (values) =>
+                          controller.selectedGenders.assignAll(values),
                     ),
-                    // const AccommodationHeader(
-                    //   title: 'Podľa veku',
-                    //   description:
-                    //       'Ubytovacie možnosti jednotlivých zariadení sa líšia aj podľa'
-                    //       ' vekovej kategórie klientov. Použitím filtra upresni svoje vyhľadávanie.',
-                    // ),
-                    // MultiSelectDialogField<String>(
-                    //   title: const Text('Vek'),
-                    //   buttonText: const Text('Vek'),
-                    //   items: Constants.ages
-                    //       .map((e) => MultiSelectItem(e, e))
-                    //       .toList(),
-                    //   listType: MultiSelectListType.CHIP,
-                    //   onConfirm: (values) {
-                    //     controller.selectedAges.assignAll(values);
-                    //   },
-                    // ),
                   ],
                 ),
               ),
@@ -139,7 +118,7 @@ class AccommodationFilteringView
           SafeArea(
             child: ElevatedButton.icon(
               label: const Text('Zobraziť ponuky'),
-              icon: Icon(Icons.remove_red_eye),
+              icon: const Icon(Icons.remove_red_eye),
               onPressed: () => Get.toNamed(Routes.ACCOMMODATION_LIST),
             ),
           ),

@@ -19,7 +19,7 @@ class AccommodationListView extends GetView<AccommodationListController> {
       ),
       body: Obx(
         () => accommodationFilteringController.accommodations.isEmpty
-            ? accommodationFilteringController.status == Status.FETCHING
+            ? accommodationFilteringController.status.value == Status.FETCHING
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
@@ -33,6 +33,8 @@ class AccommodationListView extends GetView<AccommodationListController> {
             : Scrollbar(
                 child: ListView.builder(
                   itemBuilder: (ctx, index) {
+                    final accommodation =
+                        accommodationFilteringController.accommodations[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8.0,
@@ -43,25 +45,19 @@ class AccommodationListView extends GetView<AccommodationListController> {
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ListTile(
-                              leading: LeadingIconWidget(
-                                  accommodationFilteringController
-                                      .accommodations[index].gender),
-                              title: Text(
-                                accommodationFilteringController
-                                    .accommodations[index].name,
-                              ),
+                              leading: LeadingIconWidget(accommodation.gender),
+                              title: Text(accommodation.name),
                               subtitle: Text(
-                                'Adresa: ${accommodationFilteringController.accommodations[index].address}\n'
-                                'Typ: ${accommodationFilteringController.accommodations[index].type}',
+                                'Adresa: ${accommodation.address}\n'
+                                'Typ: ${accommodation.type}\n'
+                                'Vek: ${accommodation.age}',
                               ),
                             ),
                           ),
                         ),
                         onTap: () {
                           accommodationFilteringController
-                                  .selectedAccommodation.value =
-                              accommodationFilteringController
-                                  .accommodations[index];
+                              .selectedAccommodation.value = accommodation;
                           Get.toNamed(Routes.ACCOMMODATION_DETAIL);
                         },
                       ),

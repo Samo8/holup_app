@@ -113,6 +113,7 @@ class AutomaticEventDetailController extends GetxController {
 
   Future<void> addEventToCalendar(AutomaticEvent automaticEvent) async {
     try {
+      calendarEventsController.status.value = Status.FETCHING;
       final apiController = Get.find<ApiController>();
 
       final release = await _fetchRelease(
@@ -145,6 +146,7 @@ class AutomaticEventDetailController extends GetxController {
         'Udalosť bola úspešne uložená do kalendáru',
         duration: const Duration(seconds: 5),
       );
+      calendarEventsController.status.value = Status.SUCCESS;
     } catch (e) {
       Get.back();
       Get.snackbar(

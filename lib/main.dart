@@ -31,6 +31,7 @@ class HolupApp extends StatelessWidget {
         const Locale('sk'),
       ],
       locale: const Locale('sk'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
