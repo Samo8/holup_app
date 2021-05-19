@@ -69,7 +69,7 @@ class CalendarEventsController extends GetxController {
   Future<List<Event>> getGoogleEventsData() async {
     try {
       final zvjsCalendarId = await getZvjsCalendarId();
-      final dbCalendarEvents = await fetchCalendarEvents();
+      final dbCalendarEvents = await _fetchCalendarEvents();
 
       for (final x in dbCalendarEvents) {
         print(x.id);
@@ -332,11 +332,11 @@ class CalendarEventsController extends GetxController {
   Future<void> showAlertDialog(Widget dialog) async {
     await showDialog<void>(
       context: Get.context,
-      builder: (ctx) => dialog,
+      builder: (_) => dialog,
     );
   }
 
-  Future<List<CalendarEvent>> fetchCalendarEvents() async {
+  Future<List<CalendarEvent>> _fetchCalendarEvents() async {
     try {
       final uuid = apiController.uuid.value;
       final apiKey = apiController.apiKey.value;
@@ -346,7 +346,7 @@ class CalendarEventsController extends GetxController {
         throw response.body;
       }
       final data = json.decode(response.body);
-      print(data);
+
       final calendarEvents = (data as List)
           .map((event) => CalendarEvent.fromJson(event))
           .where((event) => !event.imported)

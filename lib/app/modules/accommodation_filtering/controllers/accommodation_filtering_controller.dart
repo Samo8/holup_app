@@ -64,7 +64,6 @@ class AccommodationFilteringController extends GetxController {
       if (selectedAges.isNotEmpty) {
         arguments['ages'] = selectedAges.toJson();
       }
-      print(arguments);
 
       final response = await SpringDatabaseOperations.fetchAccommodationsData(
         arguments: arguments,
@@ -124,7 +123,7 @@ class AccommodationFilteringController extends GetxController {
     }
 
     return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.medium,
+      desiredAccuracy: LocationAccuracy.lowest,
     );
   }
 }

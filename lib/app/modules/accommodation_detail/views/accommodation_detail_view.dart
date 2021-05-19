@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:holup/app/widgets/accommodation_detail_item.dart';
 
 import '../../../constants/constants.dart';
 import '../../../widgets/gender_icons.dart';
@@ -21,53 +22,62 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
       body: ListView(
         children: [
           const SizedBox(height: 16.0),
-          ListTile(
-            leading: const Icon(
+          AccommodationDetailItem(
+            text: accommodationFilteringController
+                .selectedAccommodation.value.name,
+            leadingIcon: const Icon(
               Icons.home,
               color: Constants.primaryColor,
             ),
-            title: Text(
-              accommodationFilteringController.selectedAccommodation.value.name,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0),
             ),
           ),
-          ListTile(
-            leading: const FaIcon(
+          AccommodationDetailItem(
+            text: accommodationFilteringController
+                .selectedAccommodation.value.address
+                .toString(),
+            leadingIcon: const FaIcon(
               FontAwesomeIcons.locationArrow,
               size: 18.0,
               color: Constants.primaryColor,
             ),
-            title: Text(
-              accommodationFilteringController
-                  .selectedAccommodation.value.address
-                  .toString(),
-            ),
           ),
-          ListTile(
-            leading: LeadingIconWidget(
-              accommodationFilteringController
-                  .selectedAccommodation.value.gender,
-            ),
-            title: Text(
+          AccommodationDetailItem(
+            text: accommodationFilteringController
+                .selectedAccommodation.value.gender,
+            leadingIcon: LeadingIconWidget(
               accommodationFilteringController
                   .selectedAccommodation.value.gender,
             ),
           ),
-          ListTile(
-            leading: const FaIcon(
+          AccommodationDetailItem(
+            text: accommodationFilteringController
+                .selectedAccommodation.value.type,
+            leadingIcon: const FaIcon(
               FontAwesomeIcons.bed,
               color: Constants.primaryColor,
             ),
-            title: Text(
-              accommodationFilteringController.selectedAccommodation.value.type,
-            ),
           ),
-          ListTile(
-            title: Text(
-              accommodationFilteringController.selectedAccommodation.value.age,
+          AccommodationDetailItem(
+            text: accommodationFilteringController
+                .selectedAccommodation.value.age,
+            leadingIcon: const FaIcon(
+              FontAwesomeIcons.birthdayCake,
+              color: Constants.primaryColor,
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(15.0),
+              bottomRight: Radius.circular(15.0),
             ),
           ),
           const SizedBox(height: 12.0),
           Card(
+            margin: const EdgeInsets.symmetric(horizontal: 12.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 8.0,
@@ -95,24 +105,6 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
                   InkWell(
                     child: Column(
                       children: [
-                        const Icon(
-                          Icons.navigation,
-                          color: Constants.primaryColor,
-                        ),
-                        const Text('Navigovať'),
-                      ],
-                    ),
-                    onTap: () async {
-                      try {
-                        await controller.launchMap();
-                      } catch (e) {
-                        Get.snackbar('Chyba', e.toString());
-                      }
-                    },
-                  ),
-                  InkWell(
-                    child: Column(
-                      children: [
                         Icon(
                           Icons.phone,
                           color: Constants.primaryColor,
@@ -124,7 +116,34 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
                       await controller.makeCall(accommodationFilteringController
                           .selectedAccommodation.value.phoneNumber);
                     },
-                  )
+                  ),
+                  InkWell(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.web,
+                          color: Constants.primaryColor,
+                        ),
+                        const Text('Web')
+                      ],
+                    ),
+                    onTap: () async => await controller.openWebPage(
+                      accommodationFilteringController
+                          .selectedAccommodation.value.webPage,
+                    ),
+                  ),
+                  InkWell(
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.navigation,
+                          color: Constants.primaryColor,
+                        ),
+                        const Text('Navigovať'),
+                      ],
+                    ),
+                    onTap: () async => await controller.launchMap(),
+                  ),
                 ],
               ),
             ),

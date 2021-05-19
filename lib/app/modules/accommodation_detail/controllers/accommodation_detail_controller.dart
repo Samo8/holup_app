@@ -7,6 +7,7 @@ import '../../accommodation_filtering/controllers/accommodation_filtering_contro
 class AccommodationDetailController extends GetxController {
   static const _phoneContact = 'Telefonický kontakt';
   static const _emailContact = 'Emailový kontakt';
+  static const _webPage = 'Webová stránka';
 
   static const _googleMapBaseURL =
       'https://www.google.com/maps/search/?api=1&query=';
@@ -16,8 +17,7 @@ class AccommodationDetailController extends GetxController {
     final emailUri = Uri(
       scheme: 'mailto',
       path: email,
-      query: 'subject=Holup aplikácia&body=Dobrý den, \n'
-          'Vopred ďakujem za odpoveď\n',
+      query: 'subject=Holup',
     );
     final url = emailUri.toString();
 
@@ -54,6 +54,22 @@ class AccommodationDetailController extends GetxController {
     }
   }
 
+  Future<void> openWebPage(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      if (url.isNotEmpty) {
+        await _cantOpenAppDialog(_webPage, url);
+      } else {
+        Get.snackbar(
+          _webPage,
+          'Zariadenie nemá uvedenú webovú stránku',
+          duration: const Duration(seconds: 5),
+        );
+      }
+    }
+  }
+
   Future<void> launchMap() async {
     final accommodation = Get.find<AccommodationFilteringController>()
         ?.selectedAccommodation
@@ -69,7 +85,10 @@ class AccommodationDetailController extends GetxController {
     } else if (await canLaunch(googleMapsUrl)) {
       await launch(googleMapsUrl);
     } else {
-      throw 'Nepodarilo sa spustiť navigáciu';
+      Get.snackbar(
+        'Nepodarilo sa spustiť navigáciu',
+        'Navigácia nebola spustená',
+      );
     }
   }
 
