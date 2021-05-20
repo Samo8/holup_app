@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/calendar/v3.dart';
+import 'package:holup/app/constants/constants.dart';
 import 'package:intl/intl.dart';
 
 import '../../../connection/http_requests.dart';
@@ -62,7 +63,7 @@ class AutomaticEventDetailController extends GetxController {
   Future<void> _addEventToGoogleCalendar(
     CalendarEventDTO calendarEventDTO,
   ) async {
-    final calendarId = await calendarEventsController.getZvjsCalendarId();
+    final calendarId = await calendarEventsController.getHolupCalendarId();
     final eventDate =
         calendarEventsController.allDayEvent(calendarEventDTO.end);
 
@@ -76,10 +77,10 @@ class AutomaticEventDetailController extends GetxController {
     calendarEventsController.googleCalendarEvents.add(event);
   }
 
-  int _calculateEventDeadline({
+  Future<int> _calculateEventDeadline({
     @required AutomaticEventType type,
     @required DateTime releaseDate,
-  }) {
+  }) async {
     if (type == AutomaticEventType.RESOCIAL) {
       return _calculateWorkingDays(releaseDate, 8);
     } else if (type == AutomaticEventType.WORK_OFFICE) {
@@ -88,11 +89,17 @@ class AutomaticEventDetailController extends GetxController {
     return 0;
   }
 
+  bool _isHoliday(DateTime dateTime) {
+    final date = _dateFormat.format(dateTime);
+    return Constants.holidays.contains(date);
+  }
+
   int _calculateWorkingDays(DateTime dateTime, int days) {
     for (var i = 0; i < days; i++) {
       dateTime = dateTime.add(const Duration(days: 1));
       if (dateTime.weekday == DateTime.saturday ||
-          dateTime.weekday == DateTime.sunday) {
+          dateTime.weekday == DateTime.sunday ||
+          _isHoliday(dateTime)) {
         days++;
       }
     }
@@ -123,7 +130,7 @@ class AutomaticEventDetailController extends GetxController {
       final releaseDate = _dateFormat.parse(release.releaseDate);
       final eventDate = releaseDate.add(
         Duration(
-          days: _calculateEventDeadline(
+          days: await _calculateEventDeadline(
             type: automaticEvent.type,
             releaseDate: releaseDate,
           ),

@@ -20,7 +20,7 @@ enum Status { UNKNOWN, SUCCESS, FAILED, FETCHING }
 
 class CalendarEventsController extends GetxController {
   static const zone = 'Europe/Bratislava';
-  static const releaseEventTitle = 'Prepustenie';
+  static const _releaseEventTitle = 'Prepustenie';
 
   final _dateTimeFormat = DateFormat('dd.MM.yyyy HH:mm');
   final _dateFormat = DateFormat('dd.MM.yyyy');
@@ -68,7 +68,7 @@ class CalendarEventsController extends GetxController {
 
   Future<List<Event>> getGoogleEventsData() async {
     try {
-      final zvjsCalendarId = await getZvjsCalendarId();
+      final zvjsCalendarId = await getHolupCalendarId();
       final dbCalendarEvents = await _fetchCalendarEvents();
 
       for (final x in dbCalendarEvents) {
@@ -213,15 +213,13 @@ class CalendarEventsController extends GetxController {
     final data = json.decode(response.body);
     final releaseFromDB = Release.fromJson(data);
 
-    print(releaseFromDB.toJson());
-
     if (response.statusCode != 200) {
       throw data['message'];
     }
 
     final releaseDateEvent = events
         .map((e) => e)
-        .firstWhere((e) => e.summary == releaseEventTitle, orElse: () => null);
+        .firstWhere((e) => e.summary == _releaseEventTitle, orElse: () => null);
 
     if (releaseDateEvent != null) {
       final releaseEventDate = releaseDateEvent.start.date;
@@ -247,7 +245,7 @@ class CalendarEventsController extends GetxController {
         calendarId: calendarId,
         start: eventDateTime,
         end: eventDateTime,
-        summary: releaseEventTitle,
+        summary: _releaseEventTitle,
       );
     }
   }
@@ -269,8 +267,6 @@ class CalendarEventsController extends GetxController {
       ..end = end
       ..summary = summary ?? '';
 
-    print(reminders);
-
     if (reminders.isNotEmpty) {
       event.reminders = EventReminders()
         ..overrides = reminders
@@ -282,14 +278,14 @@ class CalendarEventsController extends GetxController {
     return await calendarAPI.events.insert(event, calendarId);
   }
 
-  Future<String> getZvjsCalendarId() async {
+  Future<String> getHolupCalendarId() async {
     try {
       final calendars = await calendarAPI.calendarList.list();
       final zvjsCalendar = calendars.items
           .map((item) => item)
           .firstWhere((item) => item.summary == 'Holup', orElse: () => null);
       if (zvjsCalendar == null) {
-        final cal = await _insertZVJSCalendar();
+        final cal = await _insertHolupCalendar();
         return cal.id;
       }
       return zvjsCalendar.id;
@@ -298,10 +294,10 @@ class CalendarEventsController extends GetxController {
     }
   }
 
-  Future<Calendar> _insertZVJSCalendar() async {
+  Future<Calendar> _insertHolupCalendar() async {
     return await calendarAPI.calendars.insert(
       Calendar()
-        ..description = 'Kalendár aplikácie Holup '
+        ..description = 'Kalendár aplikácie Holup'
         ..summary = 'Holup'
         ..timeZone = zone,
     );
