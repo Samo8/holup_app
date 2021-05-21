@@ -157,8 +157,8 @@ class AutomaticEventDetailController extends GetxController {
     } catch (e) {
       Get.back();
       Get.snackbar(
-        'Udalosť neblo uložená',
-        'nepodarilo sa uložiť udalosť, skúste to neskôr prosím',
+        'Udalosť nebola uložená',
+        'Nepodarilo sa uložiť udalosť, skúste to neskôr prosím',
         duration: const Duration(seconds: 5),
       );
     }

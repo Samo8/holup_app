@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AccommodationHeader extends StatelessWidget {
   final String title;
@@ -18,7 +19,7 @@ class AccommodationHeader extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.headline4,
+              style: Get.textTheme.headline4,
             ),
             const SizedBox(
               height: 12.0,
@@ -27,10 +28,9 @@ class AccommodationHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 description,
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1
-                    .copyWith(letterSpacing: 1.0),
+                style: Get.textTheme.subtitle1.copyWith(
+                  letterSpacing: 1.0,
+                ),
               ),
             ),
           ],

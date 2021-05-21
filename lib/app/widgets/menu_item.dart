@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../constants/constants.dart';
 
@@ -23,8 +24,9 @@ class MenuItem extends StatelessWidget {
           color: Constants.primaryColor,
           elevation: 15,
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -43,10 +45,9 @@ class MenuItem extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
                   title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      .apply(color: Colors.white),
+                  style: Get.textTheme.headline3.apply(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

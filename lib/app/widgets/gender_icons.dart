@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../constants/constants.dart';
 
 class LeadingIconWidget extends StatelessWidget {
-  static const men = 'Muži';
-  static const women = 'Ženy';
+  static const _men = 'Muži';
+  static const _women = 'Ženy';
 
   final String gender;
 
@@ -16,7 +16,7 @@ class LeadingIconWidget extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (gender.contains(men))
+        if (gender.contains(_men))
           const Padding(
             padding: EdgeInsets.all(2.0),
             child: FaIcon(
@@ -25,7 +25,7 @@ class LeadingIconWidget extends StatelessWidget {
               color: Constants.primaryColor,
             ),
           ),
-        if (gender.contains(women))
+        if (gender.contains(_women))
           const Padding(
             padding: EdgeInsets.all(2.0),
             child: FaIcon(
