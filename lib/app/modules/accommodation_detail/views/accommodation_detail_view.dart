@@ -14,6 +14,8 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
 
   @override
   Widget build(BuildContext context) {
+    final accommodation =
+        accommodationFilteringController.selectedAccommodation.value;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail ubytovania'),
@@ -23,8 +25,7 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
         children: [
           const SizedBox(height: 16.0),
           AccommodationDetailItem(
-            text: accommodationFilteringController
-                .selectedAccommodation.value.name,
+            text: accommodation.name,
             leadingIcon: const Icon(
               Icons.home,
               color: Constants.primaryColor,
@@ -35,9 +36,7 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
             ),
           ),
           AccommodationDetailItem(
-            text: accommodationFilteringController
-                .selectedAccommodation.value.address
-                .toString(),
+            text: accommodation.address.toString(),
             leadingIcon: const FaIcon(
               FontAwesomeIcons.locationArrow,
               size: 18.0,
@@ -45,26 +44,30 @@ class AccommodationDetailView extends GetView<AccommodationDetailController> {
             ),
           ),
           AccommodationDetailItem(
-            text: accommodationFilteringController
-                .selectedAccommodation.value.gender,
+            text: accommodation.gender,
             leadingIcon: LeadingIconWidget(
               accommodationFilteringController
                   .selectedAccommodation.value.gender,
             ),
           ),
           AccommodationDetailItem(
-            text: accommodationFilteringController
-                .selectedAccommodation.value.type,
+            text: accommodation.type,
             leadingIcon: const FaIcon(
               FontAwesomeIcons.bed,
               color: Constants.primaryColor,
             ),
           ),
           AccommodationDetailItem(
-            text: accommodationFilteringController
-                .selectedAccommodation.value.age,
+            text: accommodation.age,
             leadingIcon: const FaIcon(
               FontAwesomeIcons.birthdayCake,
+              color: Constants.primaryColor,
+            ),
+          ),
+          AccommodationDetailItem(
+            text: accommodation.price,
+            leadingIcon: const Icon(
+              Icons.attach_money,
               color: Constants.primaryColor,
             ),
             borderRadius: BorderRadius.only(

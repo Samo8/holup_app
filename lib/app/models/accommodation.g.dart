@@ -16,6 +16,7 @@ Accommodation _$AccommodationFromJson(Map<String, dynamic> json) {
     gender: json['gender'] as String,
     age: json['age'] as String,
     type: json['type'] as String,
+    price: json['price'] as String,
     address: json['address'] == null
         ? null
         : Address.fromJson(json['address'] as Map<String, dynamic>),
@@ -35,6 +36,7 @@ Map<String, dynamic> _$AccommodationToJson(Accommodation instance) =>
       'gender': instance.gender,
       'age': instance.age,
       'type': instance.type,
+      'price': instance.price,
       'address': instance.address,
       'location': instance.location,
     };

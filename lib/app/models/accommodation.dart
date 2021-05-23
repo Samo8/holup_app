@@ -15,6 +15,7 @@ class Accommodation {
   final String gender;
   final String age;
   final String type;
+  final String price;
   final Address address;
   final Location location;
 
@@ -27,6 +28,7 @@ class Accommodation {
     this.gender,
     this.age,
     this.type,
+    this.price,
     this.address,
     this.location,
   });
