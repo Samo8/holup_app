@@ -34,14 +34,10 @@ class SignInView extends GetView<SignInController> {
             keyboardType: TextInputType.visiblePassword,
             obscure: true,
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           Row(
             children: [
-              const SizedBox(
-                width: 12.0,
-              ),
+              const SizedBox(width: 12.0),
               const Text('Nemáte účet?'),
               InkWell(
                 child: const Text(

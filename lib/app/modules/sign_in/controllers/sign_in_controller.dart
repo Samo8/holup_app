@@ -8,8 +8,6 @@ import '../../../routes/app_pages.dart';
 
 class SignInController extends GetxController {
   Future<void> signIn(int convictedNumber, String password) async {
-    convictedNumber = 100;
-    password = '123456';
     try {
       final response =
           await SpringDatabaseOperations.signIn(convictedNumber, password);

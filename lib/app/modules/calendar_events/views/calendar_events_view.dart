@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -23,35 +24,58 @@ class CalendarEventsView extends GetView<CalendarEventsController> {
               height: 16,
             ),
             Obx(
-              () => controller.status.value == Status.FETCHING
+              () => controller.googleCalendarEvents.isEmpty
                   ? CircularProgressIndicator()
-                  : controller.status.value == Status.FAILED
-                      ? Center(
-                          child: const Text(
-                            'Nastala chyba pri získavaní udalostí z Google '
-                            'kalendára, skúste to neskôr prosím',
-                          ),
-                        )
-                      : Expanded(
-                          child: SfCalendar(
-                            view: CalendarView.schedule,
-                            dataSource: GoogleDataSource(
-                              events: controller.googleCalendarEvents,
-                            ),
-                            monthViewSettings: MonthViewSettings(
-                              appointmentDisplayMode:
-                                  MonthAppointmentDisplayMode.appointment,
-                            ),
-                            onTap: (_) async {
-                              await launch(
-                                GetPlatform.isIOS
-                                    ? 'calshow://'
-                                    : 'content://com.android.calendar/time/',
-                              );
-                            },
-                          ),
+                  : Expanded(
+                      child: SfCalendar(
+                        view: CalendarView.schedule,
+                        dataSource: GoogleDataSource(
+                          events: controller.googleCalendarEvents,
                         ),
+                        monthViewSettings: MonthViewSettings(
+                          appointmentDisplayMode:
+                              MonthAppointmentDisplayMode.appointment,
+                        ),
+                        onTap: (_) async {
+                          await launch(
+                            GetPlatform.isIOS
+                                ? 'calshow://'
+                                : 'content://com.android.calendar/time/',
+                          );
+                        },
+                      ),
+                    ),
             ),
+            // Obx(
+            //   () => controller.status.value == Status.FETCHING
+            //       ? CircularProgressIndicator()
+            //       : controller.status.value == Status.FAILED
+            //           ? Center(
+            //               child: const Text(
+            //                 'Nastala chyba pri získavaní udalostí z Google '
+            //                 'kalendára, skúste to neskôr prosím',
+            //               ),
+            //             )
+            //           : Expanded(
+            //               child: SfCalendar(
+            //                 view: CalendarView.schedule,
+            //                 dataSource: GoogleDataSource(
+            //                   events: controller.googleCalendarEvents,
+            //                 ),
+            //                 monthViewSettings: MonthViewSettings(
+            //                   appointmentDisplayMode:
+            //                       MonthAppointmentDisplayMode.appointment,
+            //                 ),
+            //                 onTap: (_) async {
+            //                   await launch(
+            //                     GetPlatform.isIOS
+            //                         ? 'calshow://'
+            //                         : 'content://com.android.calendar/time/',
+            //                   );
+            //                 },
+            //               ),
+            //             ),
+            // ),
             SafeArea(
               child: ElevatedButton.icon(
                 label: const Text(
@@ -64,9 +88,11 @@ class CalendarEventsView extends GetView<CalendarEventsController> {
                   Icons.add,
                   color: Colors.white,
                 ),
-                onPressed: () async => await controller.showAlertDialog(
-                  CustomAlertDialog(controller),
-                ),
+                onPressed: () async {
+                  controller.initAddEventDates();
+                  await controller
+                      .showAlertDialog(CustomAlertDialog(controller));
+                },
               ),
             ),
           ],
@@ -99,7 +125,9 @@ class CustomTextField extends StatelessWidget {
 class CustomAlertDialog extends StatelessWidget {
   final CalendarEventsController calendarController;
 
-  const CustomAlertDialog(this.calendarController);
+  final eventTitleTextEditingController = TextEditingController();
+
+  CustomAlertDialog(this.calendarController);
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +139,38 @@ class CustomAlertDialog extends StatelessWidget {
           children: [
             CustomTextField(
               labelText: 'Názov',
-              textEditingController:
-                  calendarController.eventTitleTextEditingController,
+              textEditingController: eventTitleTextEditingController,
             ),
-            CustomTextField(
-              labelText: 'Začiatok',
+            const SizedBox(height: 12.0),
+            DateTimePicker(
+              type: DateTimePickerType.dateTime,
+              dateMask: 'dd.MM.yy HH:mm',
+              initialValue: DateTime.now().toString(),
+              firstDate: DateTime(DateTime.now().month - 1),
+              lastDate: DateTime(DateTime.now().year + 2),
+              icon: const Icon(Icons.event),
+              dateLabelText: 'Začiatok',
+              timeLabelText: 'Čas',
+              onChanged: (val) => calendarController.dateTimeStart.value =
+                  calendarController.formatDate(val),
+              onSaved: (val) => calendarController.dateTimeStart.value =
+                  calendarController.formatDate(val),
             ),
-            CustomTextField(
-              labelText: 'Koniec',
+            const SizedBox(height: 12.0),
+            DateTimePicker(
+              type: DateTimePickerType.dateTime,
+              dateMask: 'dd.MM.yy HH:mm',
+              initialValue:
+                  DateTime.now().add(const Duration(hours: 2)).toString(),
+              firstDate: DateTime(DateTime.now().month - 1),
+              lastDate: DateTime(DateTime.now().year + 2),
+              icon: const Icon(Icons.event),
+              dateLabelText: 'Koniec',
+              timeLabelText: 'Čas',
+              onChanged: (val) => calendarController.dateTimeEnd.value =
+                  calendarController.formatDate(val),
+              onSaved: (val) => calendarController.dateTimeEnd.value =
+                  calendarController.formatDate(val),
             ),
           ],
         ),
@@ -138,9 +190,34 @@ class CustomAlertDialog extends StatelessWidget {
           ),
           onPressed: () async {
             try {
-              // print(await calendarController.addEvent());
-            } catch (e) {
-              print(e.toString());
+              final summary = eventTitleTextEditingController.text;
+              if (summary.isEmpty) {
+                Get.snackbar(
+                  'Názov udalosti je prázdny',
+                  'Názov udalosti nemôže byť prázdny',
+                );
+                return;
+              }
+              final calendarId = await calendarController.getHolupCalendarId();
+              final start = calendarController
+                  .normalEvent(calendarController.dateTimeStart.value);
+
+              final end = calendarController
+                  .normalEvent(calendarController.dateTimeEnd.value);
+
+              final event = await calendarController.addEvent(
+                calendarId: calendarId,
+                start: start,
+                end: end,
+                summary: summary,
+              );
+              calendarController.googleCalendarEvents.add(event);
+              Get.back();
+            } catch (_) {
+              Get.snackbar(
+                'Chyba pri ukladaní udalosti',
+                'Nastala chyba pri ukladaní udalosti, skúste to neskôr prosím',
+              );
             }
           },
         ),

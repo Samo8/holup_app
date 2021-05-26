@@ -29,6 +29,8 @@ dependencies:
 
   cupertino_icons: ^1.0.0
 
+  date_time_picker: ^1.1.1
+
   flutter_dotenv: ^3.1.0
   flutter_launcher_icons: ^0.8.1
   font_awesome_flutter: ^8.11.0

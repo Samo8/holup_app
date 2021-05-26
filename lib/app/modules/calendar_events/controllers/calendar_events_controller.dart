@@ -17,6 +17,7 @@ import '../../../models/release.dart';
 import '../../../routes/app_pages.dart';
 
 enum Status { UNKNOWN, SUCCESS, FAILED, FETCHING }
+enum DatePickerType { START, END }
 
 class CalendarEventsController extends GetxController {
   static const zone = 'Europe/Bratislava';
@@ -28,7 +29,9 @@ class CalendarEventsController extends GetxController {
   final apiController = Get.find<ApiController>();
 
   final googleCalendarEvents = <Event>[].obs;
-  final eventTitleTextEditingController = TextEditingController();
+
+  final dateTimeStart = ''.obs;
+  final dateTimeEnd = ''.obs;
 
   CalendarApi calendarAPI;
   var released = false;
@@ -54,8 +57,8 @@ class CalendarEventsController extends GetxController {
     for (final event in events) {
       await addEvent(
         calendarId: calendarId,
-        start: _normalEvent(event.startTime),
-        end: _normalEvent(event.endTime),
+        start: normalEvent(event.startTime),
+        end: normalEvent(event.endTime),
         summary: event.title,
       );
       print(event.id);
@@ -196,7 +199,7 @@ class CalendarEventsController extends GetxController {
     return EventDateTime()..date = dateTime;
   }
 
-  EventDateTime _normalEvent(String date) {
+  EventDateTime normalEvent(String date) {
     final dateTime = _dateTimeFormat.parse(date);
     return EventDateTime()
       ..dateTime = dateTime
@@ -272,7 +275,7 @@ class CalendarEventsController extends GetxController {
         ..overrides = reminders
         ..useDefault = false;
     } else {
-      event.reminders.useDefault = true;
+      event.reminders = EventReminders()..useDefault = true;
     }
 
     return await calendarAPI.events.insert(event, calendarId);
@@ -352,5 +355,18 @@ class CalendarEventsController extends GetxController {
     } catch (_) {
       rethrow;
     }
+  }
+
+  String formatDate(String dateTimeString) {
+    final dateTime = DateTime.parse(dateTimeString);
+    final dateFormat = DateFormat('dd.MM.yyyy HH:mm');
+    return dateFormat.format(dateTime);
+  }
+
+  void initAddEventDates() {
+    dateTimeStart.value = _dateTimeFormat.format(DateTime.now());
+    dateTimeEnd.value = _dateTimeFormat.format(
+      DateTime.now().add(const Duration(hours: 2)),
+    );
   }
 }
