@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:holup/app/errors/location_permission_exception.dart';
+import 'package:holup/app/routes/app_pages.dart';
 
 import '../../../connection/http_requests.dart';
 import '../../../models/accommodation.dart';
@@ -36,7 +38,10 @@ class AccommodationFilteringController extends GetxController {
       final arguments = <String, dynamic>{};
 
       if (distanceFromActualPossition.value != 0.0) {
+        print('fasfas');
+
         final position = await _determinePosition();
+        print(position.toJson());
         arguments['location'] = _usersPositionReguestArg(position);
         arguments['distance'] = distanceFromActualPossition.value.toDouble();
       }
@@ -85,6 +90,7 @@ class AccommodationFilteringController extends GetxController {
         data.map((e) => Accommodation.fromJson(e)).toList(),
       );
       status.value = Status.DONE;
+      await Get.toNamed(Routes.ACCOMMODATION_LIST);
     } on LocationPermissionException catch (e) {
       status.value = Status.ERROR;
       Get.snackbar('Prístup ku polohe', e.toString());
@@ -98,32 +104,41 @@ class AccommodationFilteringController extends GetxController {
   }
 
   Future<Position> _determinePosition() async {
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      throw LocationPermissionException(
-        'Prístup ku polohe zariadenia nie je povolený.',
-      );
-    }
-
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      throw LocationPermissionException(
-        'Prístup ku polohe zariadenia je zamietnutý, povoľte prosím'
-        ' prístup aplikácii v nastaveniach zariadenia.',
-      );
-    }
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
         throw LocationPermissionException(
-          'Prístup ku polohe nie je povolený (aktuálny stav: $permission).',
+          'Prístup ku polohe zariadenia nie je povolený.',
         );
       }
-    }
 
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.lowest,
-    );
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever) {
+        throw LocationPermissionException(
+          'Prístup ku polohe zariadenia je zamietnutý, povoľte prosím'
+          ' prístup aplikácii v nastaveniach zariadenia.',
+        );
+      }
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission != LocationPermission.whileInUse &&
+            permission != LocationPermission.always) {
+          throw LocationPermissionException(
+            'Prístup ku polohe nie je povolený (aktuálny stav: $permission).',
+          );
+        }
+      }
+
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.lowest,
+        timeLimit: const Duration(seconds: 10),
+      );
+    } on TimeoutException catch (_) {
+      print('asfa');
+      return await Geolocator.getLastKnownPosition();
+    } catch (e) {
+      print('catcheee');
+      throw LocationPermissionException(e.toString());
+    }
   }
 }

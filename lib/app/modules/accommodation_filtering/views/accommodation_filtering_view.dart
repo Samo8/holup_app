@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../../constants/constants.dart';
-import '../../../routes/app_pages.dart';
 import '../../../widgets/accommodation_header.dart';
 import '../controllers/accommodation_filtering_controller.dart';
 
@@ -61,7 +60,7 @@ class AccommodationFilteringView
                       title: 'Podľa mojej polohy',
                       description:
                           'Ak potrebuješ nájsť ubytovanie, ktoré je k tebe v danom momente'
-                          ' najbližšie, použi uvedený filter.',
+                          ' najbližšie, použi uvedený filter. Vyhľadávanie môže trvať až 10 sekúnd.',
                     ),
                     const SizedBox(height: 8.0),
                     Obx(
@@ -119,7 +118,8 @@ class AccommodationFilteringView
             child: ElevatedButton.icon(
               label: const Text('Zobraziť ponuky'),
               icon: const Icon(Icons.remove_red_eye),
-              onPressed: () => Get.toNamed(Routes.ACCOMMODATION_LIST),
+              onPressed: () async => controller.fetchAccommodations(),
+              // onPressed: () => Get.toNamed(Routes.ACCOMMODATION_LIST),
             ),
           ),
         ],

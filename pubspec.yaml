@@ -35,7 +35,7 @@ dependencies:
   flutter_launcher_icons: ^0.8.1
   font_awesome_flutter: ^8.11.0
 
-  geolocator: ^6.2.0
+  geolocator: ^6.2.1
   googleapis: ^0.56.1
   googleapis_auth: ^0.2.12
   google_sign_in: ^4.4.6
