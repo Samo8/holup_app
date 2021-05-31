@@ -1,6 +1,7 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:googleapis/calendar/v3.dart' as v3;
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,7 +26,16 @@ class CalendarEventsView extends GetView<CalendarEventsController> {
             ),
             Obx(
               () => controller.googleCalendarEvents.isEmpty
-                  ? CircularProgressIndicator()
+                  ? controller.status.value == Status.FETCHING
+                      ? CircularProgressIndicator()
+                      : Expanded(
+                          child: Center(
+                            child: Text(
+                              'Kalendár je prázdny',
+                              style: Get.textTheme.headline4,
+                            ),
+                          ),
+                        )
                   : Expanded(
                       child: SfCalendar(
                         view: CalendarView.schedule,
@@ -46,36 +56,6 @@ class CalendarEventsView extends GetView<CalendarEventsController> {
                       ),
                     ),
             ),
-            // Obx(
-            //   () => controller.status.value == Status.FETCHING
-            //       ? CircularProgressIndicator()
-            //       : controller.status.value == Status.FAILED
-            //           ? Center(
-            //               child: const Text(
-            //                 'Nastala chyba pri získavaní udalostí z Google '
-            //                 'kalendára, skúste to neskôr prosím',
-            //               ),
-            //             )
-            //           : Expanded(
-            //               child: SfCalendar(
-            //                 view: CalendarView.schedule,
-            //                 dataSource: GoogleDataSource(
-            //                   events: controller.googleCalendarEvents,
-            //                 ),
-            //                 monthViewSettings: MonthViewSettings(
-            //                   appointmentDisplayMode:
-            //                       MonthAppointmentDisplayMode.appointment,
-            //                 ),
-            //                 onTap: (_) async {
-            //                   await launch(
-            //                     GetPlatform.isIOS
-            //                         ? 'calshow://'
-            //                         : 'content://com.android.calendar/time/',
-            //                   );
-            //                 },
-            //               ),
-            //             ),
-            // ),
             SafeArea(
               child: ElevatedButton.icon(
                 label: const Text(
@@ -210,6 +190,17 @@ class CustomAlertDialog extends StatelessWidget {
                 start: start,
                 end: end,
                 summary: summary,
+                reminders: <v3.EventReminder>[
+                  v3.EventReminder()
+                    ..method = 'popup'
+                    ..minutes = 1440,
+                  v3.EventReminder()
+                    ..method = 'email'
+                    ..minutes = 1440,
+                  v3.EventReminder()
+                    ..method = 'popup'
+                    ..minutes = 60,
+                ],
               );
               calendarController.googleCalendarEvents.add(event);
               Get.back();

@@ -38,10 +38,7 @@ class AccommodationFilteringController extends GetxController {
       final arguments = <String, dynamic>{};
 
       if (distanceFromActualPossition.value != 0.0) {
-        print('fasfas');
-
         final position = await _determinePosition();
-        print(position.toJson());
         arguments['location'] = _usersPositionReguestArg(position);
         arguments['distance'] = distanceFromActualPossition.value.toDouble();
       }
@@ -134,10 +131,8 @@ class AccommodationFilteringController extends GetxController {
         timeLimit: const Duration(seconds: 10),
       );
     } on TimeoutException catch (_) {
-      print('asfa');
       return await Geolocator.getLastKnownPosition();
     } catch (e) {
-      print('catcheee');
       throw LocationPermissionException(e.toString());
     }
   }

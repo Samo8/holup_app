@@ -107,7 +107,9 @@ class CalendarEventsController extends GetxController {
         if (now.isBefore(now.add(Constants.automaticEventsImportMaxDuration)) &&
             showDialog &&
             !_alreadyContainsAllAutomaticEvents(appointments)) {
-          await _importAutomaticEventsDialog();
+          Future.delayed(const Duration(seconds: 2), () async {
+            await _importAutomaticEventsDialog();
+          });
         }
       }
       status.value = Status.SUCCESS;
@@ -168,7 +170,7 @@ class CalendarEventsController extends GetxController {
               ),
               const SizedBox(height: 4.0),
               InkWell(
-                child: Text(
+                child: const Text(
                   'Viac nezobrazovať',
                   style: TextStyle(color: Colors.blue),
                 ),
@@ -244,12 +246,14 @@ class CalendarEventsController extends GetxController {
       return releaseDateEvent;
     } else {
       final eventDateTime = allDayEvent(releaseFromDB.releaseDate);
-      return await addEvent(
+      final event = await addEvent(
         calendarId: calendarId,
         start: eventDateTime,
         end: eventDateTime,
         summary: _releaseEventTitle,
       );
+      events.add(event);
+      return event;
     }
   }
 
